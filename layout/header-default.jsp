@@ -30,6 +30,7 @@
 <%@ page import="java.util.Locale"%>
 
 <%
+    //Modif a apportter
     // Get the current page, minus query string
     String currentPage = UIUtil.getOriginalURL(request);
     int c = currentPage.indexOf( '?' );
@@ -41,6 +42,8 @@
     // get the locale languages
     Locale[] supportedLocales = I18nUtil.getSupportedLocales();
     Locale sessionLocale = UIUtil.getSessionLocale(request);
+
+    
     
     String title = (String) request.getAttribute("dspace.layout.title");
     String navbar = (String) request.getAttribute("dspace.layout.navbar");
@@ -225,9 +228,10 @@
     if (locbar)
     {
 %>
-<div class="container">
+<!-- LocBar -->
+<!-- <div class="container">
     <dspace:include page="/layout/location-bar.jsp" />
-</div>                
+</div>   -->              
 <%
     }
 %>

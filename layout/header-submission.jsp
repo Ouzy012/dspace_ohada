@@ -24,7 +24,26 @@
 <%@ page import="javax.servlet.jsp.jstl.core.*" %>
 <%@ page import="javax.servlet.jsp.jstl.fmt.*" %>
 
+<%@ page import="org.dspace.core.I18nUtil" %>
+<%@ page import="org.dspace.app.webui.util.UIUtil" %>
+<%@ page import="java.util.Locale"%>
+
 <%
+    //Modif a apportter
+    // Get the current page, minus query string
+    String currentPage = UIUtil.getOriginalURL(request);
+    int c = currentPage.indexOf( '?' );
+    if( c > -1 )
+    {
+        currentPage = currentPage.substring( 0, c );
+    }
+
+    // get the locale languages
+    Locale[] supportedLocales = I18nUtil.getSupportedLocales();
+    Locale sessionLocale = UIUtil.getSessionLocale(request);
+    //Fin modif a apporter
+
+
     String title = (String) request.getAttribute("dspace.layout.title");
     String navbar = (String) request.getAttribute("dspace.layout.navbar");
     boolean locbar = ((Boolean) request.getAttribute("dspace.layout.locbar")).booleanValue();
@@ -107,10 +126,39 @@
     <%-- HACK: marginwidth, marginheight: for non-CSS compliant Netscape browser --%>
     <body class="undernavigation">
 <a class="sr-only" href="#content">Skip navigation</a>
-<header class="navbar navbar-inverse navbar-fixed-top">    
+<header class="navbar-fixed-top" style="background-color: #020661;">    
     <%
     if (!navbar.equals("off"))
     {
+        if (supportedLocales != null && supportedLocales.length > 1)
+            {
+%>
+            <div class="" >
+                <div class="row clearfix">
+                    <div class="col-md-3 col-lg-offset-9" style="background-color: #0ffdff;">                                
+                        <div class="float-right">
+                            <ul class="list-inline">  
+                                <%
+                                
+                                for (int i = supportedLocales.length-1; i >= 0; i--) 
+                                    {
+                                %>                                      
+                                <li style="border-right: 1px solid #000;">
+                                    <a style="text-decoration: none; color: #000000;" onclick="javascript:document.repost.locale.value='<%=supportedLocales[i].toString()%>';
+                                        document.repost.submit();" href="<%= currentPage %>?locale=<%=supportedLocales[i].toString()%>">
+                            <%= supportedLocales[i].getDisplayLanguage(supportedLocales[i])%>
+                            </a>                                         
+                                </li>
+                                <%
+                                    }
+                                %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<%
+    }
 %>
             <div class="container">
                 <dspace:include page="<%= navbar %>" />
@@ -134,9 +182,9 @@
     if (locbar)
     {
 %>
-<div class="container">
+<!-- <div class="container">
                 <dspace:include page="/layout/location-bar.jsp" />
-</div>                
+</div>  -->               
 <%
     }
 %>
